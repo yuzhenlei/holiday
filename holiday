@@ -1,0 +1,39 @@
+#!/usr/bin/php
+<?php
+namespace Holiday;
+
+error_reporting(E_ERROR|E_WARNING);
+
+foreach (glob('./src/*.php') as $file) {
+    require_once $file;
+}
+
+if (count($argv) != 2) {
+    exit('usage: holiday [year]'.PHP_EOL);
+}
+$year = intval($argv[1]);
+$match = new Match($year);
+$searchUrl = "http://sousuo.gov.cn/s.htm?t=paper&advance=false&n=10&timetype=&mintime=&maxtime=&sort=pubtime&sortType=0&q=";
+$searchUrl .= urlencode("国务院办公厅关于{$year}年部分节假日安排的通知");
+$searchPageContent = file_get_contents($searchUrl);
+$announcementUrl = $match->url($searchPageContent);
+$announcementPageContent = file_get_contents($announcementUrl);
+$announcementContent = $match->announcement($announcementPageContent);
+$match->holiday($announcementContent);
+
+if (!$match->getHolidayDate() || !$match->getAdjustDate()) {
+    // todo alert
+    exit;
+}
+
+$holidayJson = file_get_contents('holiday.json');
+$holidayArr = [];
+if ($holidayJson) {
+    $holidayArr = json_decode($holidayJson, true);
+}
+$holidayArr[$year] = [
+    'holiday' => $match->getHolidayDate(),
+    'adjustDate' => $match->getAdjustDate()
+];
+file_put_contents('holiday.json', json_encode($holidayArr));
+
