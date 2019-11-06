@@ -1,7 +1,7 @@
 <?php
 namespace Holiday;
 
-foreach (glob('./*.php') as $file) {
+foreach (glob(__DIR__.'/../src/*.php') as $file) {
     require_once $file;
 }
 
