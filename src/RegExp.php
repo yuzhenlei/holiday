@@ -30,7 +30,8 @@ class RegExp
 
     public static function holidayRangeT4()
     {
-        return '/[^年](\d{1,2}+)月(\d{1,2}+)日[放假|调休]+/';
+        //return '/[^年](\d{1,2}+)月(\d{1,2}+)日[放假|调休]+/';
+        return '/[^至—]*?((\d{4})+年)*(\d{1,2}+)月(\d{1,2}+)日[放假|调休]+/';
     }
 
     public static function holidayRangeT5()

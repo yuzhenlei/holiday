@@ -92,8 +92,10 @@ class Match
     private function arrangeDateForT4($matches)
     {
         array_shift($matches);
-        list($m1, $d1) = $matches;
-        return ["{$this->year}-$m1-$d1"];
+        array_shift($matches);
+        list($y1, $m1, $d1) = $matches;
+        $y1 = $y1 ?: $this->year;
+        return ["{$y1}-$m1-$d1"];
     }
 
     private function arrangeDateForT5($matches)
